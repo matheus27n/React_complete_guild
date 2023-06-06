@@ -1,24 +1,41 @@
-import React from 'react';
+import React, { useState } from 'react';
+
 import ExpenseForm from './ExpenseForm';
 import './NewExpense.css';
 
 const NewExpense = (props) => {
+  const [isEditing, setIsEditing] = useState(false);
 
-    const saveExpenseDataHandler = (enteredExpenseData) => { // recebe o objeto entradaUsuario
-        const expenseData = { // cria um objeto com os valores inseridos pelo usuário
-            ...enteredExpenseData, // copia todos os valores do objeto entradaUsuario
-            id: Math.random().toString() // cria um id aleatório
-        };
-        props.onAddExpense(expenseData); // chama a função addExpenseHandler do componente pai App.js e passa o objeto expenseData como argumento
+  const saveExpenseDataHandler = (enteredExpenseData) => {
+    const expenseData = {
+      ...enteredExpenseData,
+      id: Math.random().toString(),
     };
+    props.onAddExpense(expenseData);
+    setIsEditing(false);
+  };
 
-    return (
-        <div className="new-expense">
-            <ExpenseForm onSaveExpenseData={saveExpenseDataHandler} /> {/* chama a função saveExpenseDataHandler e passa o objeto expenseData como argumento */}
-        </div>
-    );
+  const startEditingHandler = () => {
+    setIsEditing(true);
+  };
 
+  const stopEditingHandler = () => {
+    setIsEditing(false);
+  };
+
+  return (
+    <div className='new-expense'>
+      {!isEditing && (
+        <button onClick={startEditingHandler}>Add New Expense</button>
+      )}
+      {isEditing && (
+        <ExpenseForm
+          onSaveExpenseData={saveExpenseDataHandler}
+          onCancel={stopEditingHandler}
+        />
+      )}
+    </div>
+  );
 };
 
 export default NewExpense;
-
